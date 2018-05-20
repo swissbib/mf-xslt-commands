@@ -1,5 +1,6 @@
 package org.swissbib.mf.pipe.xslt;
 
+import org.metafacture.framework.MetafactureException;
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.helpers.DefaultObjectPipe;
 
@@ -9,6 +10,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -23,25 +25,13 @@ public class XSLTPipeStep extends DefaultObjectPipe<XSLTObject, ObjectReceiver<X
 
     public void setTemplate(String templatePath) {
 
-        System.setProperty("javax.xml.transform.TransformerFactory","net.sf.saxon.TransformerFactoryImpl");
-
-
-        this.templatePath = templatePath;
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        StreamSource source = null;
-
-        if (new File(templatePath).exists()) {
-            source = new StreamSource(templatePath);
-            try {
-                transformer = transformerFactory.newTransformer(source);
-            } catch (TransformerConfigurationException ex) {
-                ex.printStackTrace();
-
-            }
-
+        Optional<Transformer> oT =  new TransformerBuilder().buildTransformer(templatePath);
+        //oT. ifPresent(val -> transformer = val);
+        if (oT.isPresent()) {
+            transformer = oT.get();
+        } else {
+            throw new MetafactureException("blbl");
         }
-
 
     }
 
