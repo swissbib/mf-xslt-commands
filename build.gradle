@@ -6,12 +6,23 @@ description = 'additional mf commands to wrap xslt templates as part of the work
 
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java-library'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        //http://imperceptiblethoughts.com/shadow/
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
 }
 
 dependencies {
@@ -31,3 +42,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+shadowJar {
+    zip64 true
+}
